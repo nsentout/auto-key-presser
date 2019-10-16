@@ -213,6 +213,7 @@ public class MainWindow extends Application
         if (isAutoTyping) {
         	timer.cancel();
         }
+        System.exit(0);
     }
  
     public static void main(String[] args)
