@@ -1,6 +1,5 @@
 package application;
 
-import java.awt.AWTException;
 import java.awt.Robot;
 import java.util.HashMap;
 import java.util.TimerTask;
@@ -11,15 +10,16 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-public class UserInput extends TimerTask
+public class AutoPressTask extends TimerTask
 {
 	// Map JavaFx buttons to Robot mouse buttons
 	private HashMap<MouseButton, Integer> mouseButtonsMap;
 	
+	// Key or mouse button that will be autopressed
 	private KeyCode keyCode;
 	private MouseButton mouseButton;
 	
-	public UserInput()
+	public AutoPressTask()
 	{
 		mouseButtonsMap = new HashMap<MouseButton, Integer>();
 		mouseButtonsMap.put(MouseButton.PRIMARY, java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
@@ -27,6 +27,7 @@ public class UserInput extends TimerTask
 		mouseButtonsMap.put(MouseButton.MIDDLE, java.awt.event.InputEvent.BUTTON3_DOWN_MASK);
 	}
 	
+	// Set the key or mouse button to be autopressed
 	public void setUserInput(InputEvent inputType)
 	{
 		if (inputType instanceof KeyEvent) {
@@ -42,6 +43,7 @@ public class UserInput extends TimerTask
 		}
 	}
 	
+	@Override
 	public void run()
     {
     	try {
@@ -57,12 +59,10 @@ public class UserInput extends TimerTask
     			robot.mouseRelease(mouseButtonsMap.get(mouseButton));
     		}
     		else {
-    			// Press Space by default
-    			System.out.println("PRESSED SPACE");
-    			robot.keyPress(java.awt.event.KeyEvent.VK_SPACE);
+    			throw new Exception("No key/mouse buttons have been assigned");
     		}
 
-		} catch (AWTException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
      }
