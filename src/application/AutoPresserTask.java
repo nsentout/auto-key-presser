@@ -10,7 +10,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 
-public class AutoPressTask extends TimerTask
+public class AutoPresserTask extends TimerTask
 {
 	// Map JavaFx buttons to Robot mouse buttons
 	private HashMap<MouseButton, Integer> mouseButtonsMap;
@@ -19,7 +19,7 @@ public class AutoPressTask extends TimerTask
 	private KeyCode keyCode;
 	private MouseButton mouseButton;
 	
-	public AutoPressTask()
+	public AutoPresserTask()
 	{
 		mouseButtonsMap = new HashMap<MouseButton, Integer>();
 		mouseButtonsMap.put(MouseButton.PRIMARY, java.awt.event.InputEvent.BUTTON1_DOWN_MASK);
