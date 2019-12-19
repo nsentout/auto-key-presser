@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -92,8 +93,8 @@ public class MainWindow extends Application
 					if (isAutoPressing) {
 						System.out.println("AUTOPRESSING ...");
 						
-						autoPressButton.setText("DÉSACTIVER AUTOPRESS");
-
+						autoPressButton.setText("DÃ‰SACTIVER AUTOPRESS");
+						
 						// Update the key that will be auto pressing
 						autoPresserTask = new AutoPresserTask();
 						autoPresserTask.setUserInput(autoPressedKey);
@@ -134,21 +135,26 @@ public class MainWindow extends Application
 			@Override
 			public void handle(KeyEvent keyEvent)
 			{
-				if (isDefiningAutoPressedKey) {
-					System.out.println("NEW AUTO PRESSED KEY: " + keyEvent.getCode());
-
-					// Center the click button label
-					((HBox) root.lookup("#defineKeyBox")).setSpacing(150.0);
-
-					// Update the key that will be auto pressing
-					autoPressedKey = keyEvent;
-
-					// Update the label
-					keyLabel.setText(keyEvent.getCode().getName());
-
-					// Reset the button allowing to change the key that will be auto pressing
-					defineKeyButton.setText("Définir touche");
-					isDefiningAutoPressedKey = false;
+				if (isDefiningAutoPressedKey) {		
+					if (keyEvent.getCode() != KeyCode.UNDEFINED) {
+						System.out.println("NEW AUTO PRESSED KEY: " + keyEvent.getCode());
+						
+						// Center the click button label
+						((HBox) root.lookup("#defineKeyBox")).setSpacing(150.0);
+	
+						// Update the key that will be auto pressing
+						autoPressedKey = keyEvent;
+	
+						// Update the label
+						keyLabel.setText(keyEvent.getCode().getName());
+	
+						// Reset the button allowing to change the key that will be auto pressing
+						defineKeyButton.setText("DÃ©finir touche");
+						isDefiningAutoPressedKey = false;
+					}
+					else {
+						System.err.println("This key is undefined, it can't be autopressed");
+					}
 				}
 			}
 		});
@@ -171,7 +177,7 @@ public class MainWindow extends Application
 					keyLabel.setText(mouseEvent.getButton().name());
 
 					// Reset the button allowing to change the key that will be auto pressing
-					defineKeyButton.setText("Définir touche");
+					defineKeyButton.setText("DÃ©finir touche");
 					isDefiningAutoPressedKey = false;
 				}
 			}
