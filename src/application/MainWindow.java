@@ -29,6 +29,8 @@ public class MainWindow extends Application
 
 	private static final int WINDOW_WIDTH = 400;
 	private static final int WINDOW_HEIGHT = 400;
+	
+	private static final KeyCode START_STOP_AUTOPRESS_KEY = KeyCode.F1;
 
 	private boolean isAutoPressing = false;
 	private boolean isDefiningAutoPressedKey = false;
@@ -61,6 +63,7 @@ public class MainWindow extends Application
 		setDefineKeyButtonBehavior(defineKeyButton, keyLabel, root);
 		setApplyDelayButtonBehavior(applyDelayButton, minDelay, secDelay, msDelay);
 		setDelayTextFieldsBehavior(minDelay, secDelay, msDelay);
+		enableStartStopAutoPressWithKey(autoPressButton, root);
 
 		// Create the main scene and show the stage
 		Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -80,41 +83,19 @@ public class MainWindow extends Application
 		System.exit(0);
 	}
 
-	public void setAutoPressButtonBehavior(Button autoPressButton)
+	private void setAutoPressButtonBehavior(Button autoPressButton)
 	{
 		// Activate / Deactivate auto pressing
 		autoPressButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event)
 			{
-				if (autoPressedKey != null) {
-					isAutoPressing = !isAutoPressing;
-
-					if (isAutoPressing) {
-						System.out.println("AUTOPRESSING ...");
-						
-						autoPressButton.setText("DÉSACTIVER AUTOPRESS");
-						
-						// Update the key that will be auto pressing
-						autoPresserTask = new AutoPresserTask();
-						autoPresserTask.setUserInput(autoPressedKey);
-
-						timer = new Timer();
-						timer.schedule(autoPresserTask, START_DELAY, autoPresserDelay);
-
-					}
-					else {
-						System.out.println("STOP AUTOPRESSING");
-						
-						autoPressButton.setText("ACTIVER AUTOPRESS");
-						timer.cancel();
-					}
-				}  		
+				handleClickOnAutoPressKey(autoPressButton);
 			}
 		});
 	}
 
-	public void setDefineKeyButtonBehavior(Button defineKeyButton, Label keyLabel, Parent root)
+	private void setDefineKeyButtonBehavior(Button defineKeyButton, Label keyLabel, Parent root)
 	{
 		// Ask the user to type the new auto pressed key
 		defineKeyButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -184,7 +165,7 @@ public class MainWindow extends Application
 		});
 	}
 
-	public void setApplyDelayButtonBehavior(Button applyDelayButton, TextField minDelay, TextField secDelay, TextField msDelay)
+	private void setApplyDelayButtonBehavior(Button applyDelayButton, TextField minDelay, TextField secDelay, TextField msDelay)
 	{
 		// Apply a new delay
 		applyDelayButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -218,7 +199,7 @@ public class MainWindow extends Application
 		});
 	}
 
-	public void setDelayTextFieldsBehavior(TextField minDelay, TextField secDelay, TextField msDelay)
+	private void setDelayTextFieldsBehavior(TextField minDelay, TextField secDelay, TextField msDelay)
 	{
 		// Prevent from typing characters in the delay's input fields
 		UnaryOperator<Change> filter = change -> {
@@ -234,6 +215,58 @@ public class MainWindow extends Application
 		minDelay.setTextFormatter(new TextFormatter<>(filter));
 		secDelay.setTextFormatter(new TextFormatter<>(filter));
 		msDelay.setTextFormatter(new TextFormatter<>(filter));
+	}
+	
+	private void enableStartStopAutoPressWithKey(Button autoPressButton, Parent root)
+	{
+		// Save the new auto pressing mouse click
+		root.setOnKeyReleased(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent keyEvent)
+			{
+				if (keyEvent.getCode().equals(START_STOP_AUTOPRESS_KEY)) {
+					handleClickOnAutoPressKey(autoPressButton);
+				}
+			}
+		});
+	}
+	
+	private void handleClickOnAutoPressKey(Button autoPressButton)
+	{
+		if (!isDefiningAutoPressedKey) {
+			if (isAutoPressing) {
+				deactivateAutoPress(autoPressButton);
+			}
+			else {
+				activateAutoPress(autoPressButton);
+			}
+		}
+	}
+	
+	private void activateAutoPress(Button autoPressButton)
+	{
+		if (autoPressedKey != null) {
+			System.out.println("AUTOPRESSING ...");
+			
+			isAutoPressing = true;
+			autoPressButton.setText("DÉSACTIVER AUTOPRESS");
+			
+			// Update the key that will be auto pressing
+			autoPresserTask = new AutoPresserTask();
+			autoPresserTask.setUserInput(autoPressedKey);
+	
+			timer = new Timer();
+			timer.schedule(autoPresserTask, START_DELAY, autoPresserDelay);
+		}
+	}
+	
+	private void deactivateAutoPress(Button autoPressButton)
+	{
+		System.out.println("STOP AUTOPRESSING");
+		
+		isAutoPressing = false;
+		autoPressButton.setText("ACTIVER AUTOPRESS");
+		timer.cancel();
 	}
 
 	public static void main(String[] args)
