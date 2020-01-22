@@ -1,4 +1,4 @@
-package application;
+package fiftiz.autokeypresser;
 
 import java.awt.Robot;
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public class AutoPresserTask extends TimerTask
     		
     		if (keyCode != null) {
     			System.out.println("PRESSED " + keyCode.getName());
-    			robot.keyPress(keyCode.impl_getCode());
+    			robot.keyPress(keyCode.getCode());
     		}
     		else if (mouseButton != null) {
     			System.out.println("PRESSED " + mouseButton.name() + " MOUSE BUTTON ");

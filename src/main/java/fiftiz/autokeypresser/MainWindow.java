@@ -1,4 +1,4 @@
-package application;
+package fiftiz.autokeypresser;
 
 import java.util.Timer;
 import java.util.function.UnaryOperator;
@@ -47,8 +47,15 @@ public class MainWindow extends Application
 	{
 		autoPresserTask = new AutoPresserTask();
 		timer = new Timer();
-
-		Parent root = FXMLLoader.load(getClass().getResource("layout.fxml"));
+		
+		Parent root = null;
+		try {
+			root = new FXMLLoader(getClass().getResource("layout.fxml")).load();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			System.exit(-1);
+		}
 
 		Button autoPressButton = (Button) root.lookup("#autoPressButton");
 		Button defineKeyButton = (Button) root.lookup("#defineKeyButton");
@@ -58,7 +65,7 @@ public class MainWindow extends Application
 		TextField minDelay = (TextField) root.lookup("#minDelay");
 		TextField secDelay = (TextField) root.lookup("#secDelay");
 		TextField msDelay = (TextField) root.lookup("#msDelay");
-
+	
 		setAutoPressButtonBehavior(autoPressButton);
 		setDefineKeyButtonBehavior(defineKeyButton, keyLabel, root);
 		setApplyDelayButtonBehavior(applyDelayButton, minDelay, secDelay, msDelay);
@@ -67,7 +74,7 @@ public class MainWindow extends Application
 
 		// Create the main scene and show the stage
 		Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-		primaryStage.setTitle("AutoKeyPress");
+		primaryStage.setTitle("AutoKeyPresser");
 		primaryStage.setResizable(false);
 		primaryStage.setScene(scene);
 		primaryStage.show();
