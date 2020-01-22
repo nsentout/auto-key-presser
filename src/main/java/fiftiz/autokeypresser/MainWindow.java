@@ -2,8 +2,16 @@ package fiftiz.autokeypresser;
 
 import java.util.Timer;
 import java.util.function.UnaryOperator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
+import org.jnativehook.keyboard.NativeKeyEvent;
+import org.jnativehook.keyboard.NativeKeyListener;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -22,25 +30,43 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
  
-public class MainWindow extends Application
+public class MainWindow extends Application implements NativeKeyListener
 {
 	private static final int START_DELAY = 3000;	// delay before the first auto press
 	private static final long DEFAULT_DELAY_BETWEEN_KEYPRESS = 1000;
 
 	private static final int WINDOW_WIDTH = 400;
 	private static final int WINDOW_HEIGHT = 400;
+	private static final String WINDOW_TITLE = "AutoKeyPresser";
+	
+	private static final String FXML_FILE_NAME = "layout.fxml";
 	
 	private static final KeyCode START_STOP_AUTOPRESS_KEY = KeyCode.F1;
 
-	private boolean isAutoPressing = false;
-	private boolean isDefiningAutoPressedKey = false;
+	private static boolean isAutoPressing = false;
+	private static boolean isDefiningAutoPressedKey = false;
 
 	// Timer used to run <autoPresserTask> every <autoPresserDelay> ms
-	private Timer timer;
-	private AutoPresserTask autoPresserTask;
+	private static Timer timer;
+	private static AutoPresserTask autoPresserTask;
 
-	private InputEvent autoPressedKey;
-	private long autoPresserDelay = DEFAULT_DELAY_BETWEEN_KEYPRESS;
+	private static InputEvent autoPressedKey;
+	private static long autoPresserDelay = DEFAULT_DELAY_BETWEEN_KEYPRESS;
+	
+	private Parent root;
+	
+	// Window's buttons
+	private static Button autoPressButton;
+	private Button defineKeyButton;
+	private Button applyDelayButton;
+	
+	// Window's label
+	private Label keyLabel;
+	
+	// Window's textfields
+	private TextField minDelay;
+	private TextField secDelay;
+	private TextField msDelay;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception
@@ -48,36 +74,50 @@ public class MainWindow extends Application
 		autoPresserTask = new AutoPresserTask();
 		timer = new Timer();
 		
-		Parent root = null;
 		try {
-			root = new FXMLLoader(getClass().getResource("layout.fxml")).load();
+			GlobalScreen.registerNativeHook();
+			
+			Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+			logger.setLevel(Level.WARNING);
+			logger.setUseParentHandlers(false);
+		}
+		catch (NativeHookException ex) {
+			System.err.println("There was a problem registering the native hook.");
+			System.err.println(ex.getMessage());
+			System.exit(1);
+		}
+
+		GlobalScreen.addNativeKeyListener(new MainWindow());
+		
+		try {
+			root = new FXMLLoader(getClass().getResource(FXML_FILE_NAME)).load();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			System.exit(-1);
+			System.exit(1);
 		}
 
-		Button autoPressButton = (Button) root.lookup("#autoPressButton");
-		Button defineKeyButton = (Button) root.lookup("#defineKeyButton");
-		Button applyDelayButton = (Button) root.lookup("#applyDelayButton");
-		Label keyLabel = (Label) root.lookup("#autoPressedKey");
+		autoPressButton = (Button) root.lookup("#autoPressButton");
+		defineKeyButton = (Button) root.lookup("#defineKeyButton");
+		applyDelayButton = (Button) root.lookup("#applyDelayButton");
+		keyLabel = (Label) root.lookup("#autoPressedKey");
 
-		TextField minDelay = (TextField) root.lookup("#minDelay");
-		TextField secDelay = (TextField) root.lookup("#secDelay");
-		TextField msDelay = (TextField) root.lookup("#msDelay");
+		minDelay = (TextField) root.lookup("#minDelay");
+		secDelay = (TextField) root.lookup("#secDelay");
+		msDelay = (TextField) root.lookup("#msDelay");
 	
-		setAutoPressButtonBehavior(autoPressButton);
-		setDefineKeyButtonBehavior(defineKeyButton, keyLabel, root);
-		setApplyDelayButtonBehavior(applyDelayButton, minDelay, secDelay, msDelay);
-		setDelayTextFieldsBehavior(minDelay, secDelay, msDelay);
-		enableStartStopAutoPressWithKey(autoPressButton, root);
+		setAutoPressButtonBehavior();
+		setDefineKeyButtonBehavior();
+		setApplyDelayButtonBehavior();
+		setDelayTextFieldsBehavior();
+		enableStartStopAutoPressWithKey();
 
 		// Create the main scene and show the stage
 		Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-		primaryStage.setTitle("AutoKeyPresser");
+		primaryStage.setTitle(WINDOW_TITLE);
 		primaryStage.setResizable(false);
 		primaryStage.setScene(scene);
-		primaryStage.show();
+		primaryStage.show();	
 	}
 
 	@Override
@@ -90,19 +130,19 @@ public class MainWindow extends Application
 		System.exit(0);
 	}
 
-	private void setAutoPressButtonBehavior(Button autoPressButton)
+	private void setAutoPressButtonBehavior()
 	{
 		// Activate / Deactivate auto pressing
 		autoPressButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event)
 			{
-				handleClickOnAutoPressKey(autoPressButton);
+				handleClickOnAutoPressKey();
 			}
 		});
 	}
 
-	private void setDefineKeyButtonBehavior(Button defineKeyButton, Label keyLabel, Parent root)
+	private void setDefineKeyButtonBehavior()
 	{
 		// Ask the user to type the new auto pressed key
 		defineKeyButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -172,7 +212,7 @@ public class MainWindow extends Application
 		});
 	}
 
-	private void setApplyDelayButtonBehavior(Button applyDelayButton, TextField minDelay, TextField secDelay, TextField msDelay)
+	private void setApplyDelayButtonBehavior()
 	{
 		// Apply a new delay
 		applyDelayButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -206,7 +246,7 @@ public class MainWindow extends Application
 		});
 	}
 
-	private void setDelayTextFieldsBehavior(TextField minDelay, TextField secDelay, TextField msDelay)
+	private void setDelayTextFieldsBehavior()
 	{
 		// Prevent from typing characters in the delay's input fields
 		UnaryOperator<Change> filter = change -> {
@@ -224,7 +264,7 @@ public class MainWindow extends Application
 		msDelay.setTextFormatter(new TextFormatter<>(filter));
 	}
 	
-	private void enableStartStopAutoPressWithKey(Button autoPressButton, Parent root)
+	private void enableStartStopAutoPressWithKey()
 	{
 		// Save the new auto pressing mouse click
 		root.setOnKeyReleased(new EventHandler<KeyEvent>() {
@@ -232,25 +272,25 @@ public class MainWindow extends Application
 			public void handle(KeyEvent keyEvent)
 			{
 				if (keyEvent.getCode().equals(START_STOP_AUTOPRESS_KEY)) {
-					handleClickOnAutoPressKey(autoPressButton);
+					handleClickOnAutoPressKey();
 				}
 			}
 		});
 	}
 	
-	private void handleClickOnAutoPressKey(Button autoPressButton)
+	private void handleClickOnAutoPressKey()
 	{
 		if (!isDefiningAutoPressedKey) {
 			if (isAutoPressing) {
-				deactivateAutoPress(autoPressButton);
+				deactivateAutoPress();
 			}
 			else {
-				activateAutoPress(autoPressButton);
+				activateAutoPress();
 			}
 		}
 	}
 	
-	private void activateAutoPress(Button autoPressButton)
+	private void activateAutoPress()
 	{
 		if (autoPressedKey != null) {
 			System.out.println("AUTOPRESSING ...");
@@ -267,7 +307,7 @@ public class MainWindow extends Application
 		}
 	}
 	
-	private void deactivateAutoPress(Button autoPressButton)
+	private void deactivateAutoPress()
 	{
 		System.out.println("STOP AUTOPRESSING");
 		
@@ -280,5 +320,21 @@ public class MainWindow extends Application
 	{
 		Application.launch(args);
 	}
+
+	@Override
+	public void nativeKeyReleased(NativeKeyEvent event) {
+		String keyReleased = NativeKeyEvent.getKeyText(event.getKeyCode());
+		
+		if (keyReleased.equalsIgnoreCase(START_STOP_AUTOPRESS_KEY.getName())) {
+			// Make the JavaFX application thread call this function
+			Platform.runLater(() -> handleClickOnAutoPressKey());
+		}
+	}
+	
+	@Override
+	public void nativeKeyTyped(NativeKeyEvent event) {}
+
+	@Override
+	public void nativeKeyPressed(NativeKeyEvent event) {}
 
 }
