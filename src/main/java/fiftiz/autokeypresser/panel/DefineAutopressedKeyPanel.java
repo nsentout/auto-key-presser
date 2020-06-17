@@ -13,6 +13,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 
 public class DefineAutopressedKeyPanel
 {
@@ -69,19 +70,21 @@ public class DefineAutopressedKeyPanel
 				if (isDefiningAutopressedKey) {		
 					if (keyEvent.getCode() != KeyCode.UNDEFINED) {
 						System.out.println("NEW AUTO PRESSED KEY: " + keyEvent.getCode());
-						
-						// Center the click button label
-						((HBox) root.lookup("#defineKeyBox")).setSpacing(150.0);
-	
+
 						// Update the key that will be auto pressing
 						autoPressedKey = keyEvent;
-	
+
 						// Update the label
-						autopressedKeyLabel.setText(keyEvent.getCode().getName());
-	
+						Text newAutopressedKey = new Text(keyEvent.getCode().getName());
+						autopressedKeyLabel.setText(newAutopressedKey.getText());
+
 						// Reset the button allowing to change the key that will be auto pressing
 						defineKeyButton.setText(LanguageConstants.DEFINE_KEY_TEXT);
 						isDefiningAutopressedKey = false;
+
+						// Center the key label
+						double newKeyWidth = newAutopressedKey.getLayoutBounds().getWidth();
+						((HBox) root.lookup(FxmlConstants.DEFINE_KEY_BOX_ID)).setSpacing(MainWindow.WINDOW_WIDTH / 4 - newKeyWidth);
 					}
 					else {
 						System.err.println("This key is undefined, it can't be autopressed");
@@ -98,18 +101,20 @@ public class DefineAutopressedKeyPanel
 				if (isDefiningAutopressedKey) {
 					System.out.println("NEW AUTO CLICKED BUTTON : " + mouseEvent.getButton().name());
 
-					// Center the click button label
-					((HBox) root.lookup("#defineKeyBox")).setSpacing(40.0);
-
 					// Update the key that will be auto pressing
 					autoPressedKey = mouseEvent;
 
 					// Update the label
-					autopressedKeyLabel.setText(mouseEvent.getButton().name());
+					Text newAutopressedKey = new Text(mouseEvent.getButton().name());
+					autopressedKeyLabel.setText(newAutopressedKey.getText());
 
 					// Reset the button allowing to change the key that will be auto pressing
 					defineKeyButton.setText("Définir touche");
 					isDefiningAutopressedKey = false;
+
+					// Center the key label
+					double newKeyWidth = newAutopressedKey.getLayoutBounds().getWidth();
+					((HBox) root.lookup(FxmlConstants.DEFINE_KEY_BOX_ID)).setSpacing(MainWindow.WINDOW_WIDTH / 4 - newKeyWidth);
 				}
 			}
 		});
