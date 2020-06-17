@@ -3,6 +3,7 @@ package fiftiz.autokeypresser.panel;
 import java.util.function.UnaryOperator;
 
 import fiftiz.autokeypresser.FxmlConstants;
+import fiftiz.autokeypresser.LanguageConstants;
 import fiftiz.autokeypresser.MainWindow;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -46,6 +47,7 @@ public class ApplyDelayPanel
 	
 	public void init(Parent root) {
 		applyDelayButton = (Button) root.lookup(FxmlConstants.APPLY_DELAY_BUTTON_ID);
+		applyDelayButton.setText(LanguageConstants.APPLY_DELAY_TEXT);
 
 		minDelay = (TextField) root.lookup(FxmlConstants.MINUTE_INPUT_ID);
 		secDelay = (TextField) root.lookup(FxmlConstants.SECOND_INPUT_ID);

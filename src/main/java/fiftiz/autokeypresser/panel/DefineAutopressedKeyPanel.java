@@ -1,6 +1,7 @@
 package fiftiz.autokeypresser.panel;
 
 import fiftiz.autokeypresser.FxmlConstants;
+import fiftiz.autokeypresser.LanguageConstants;
 import fiftiz.autokeypresser.MainWindow;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
@@ -37,6 +38,8 @@ public class DefineAutopressedKeyPanel
 	public void init(Parent root)
 	{
 		defineKeyButton = (Button) root.lookup(FxmlConstants.DEFINE_KEY_BUTTON_ID);
+		defineKeyButton.setText(LanguageConstants.DEFINE_KEY_TEXT);
+		
 		autopressedKeyLabel = (Label) root.lookup(FxmlConstants.AUTOPRESSED_KEY_LABEL_ID);
 		
 		setDefineKeyButtonBehavior(root);
@@ -77,7 +80,7 @@ public class DefineAutopressedKeyPanel
 						autopressedKeyLabel.setText(keyEvent.getCode().getName());
 	
 						// Reset the button allowing to change the key that will be auto pressing
-						defineKeyButton.setText("Définir touche");
+						defineKeyButton.setText(LanguageConstants.DEFINE_KEY_TEXT);
 						isDefiningAutopressedKey = false;
 					}
 					else {

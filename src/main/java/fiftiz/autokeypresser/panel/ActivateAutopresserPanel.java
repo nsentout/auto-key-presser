@@ -11,6 +11,7 @@ import org.jnativehook.keyboard.NativeKeyListener;
 
 import fiftiz.autokeypresser.AutoPresserTimerTask;
 import fiftiz.autokeypresser.FxmlConstants;
+import fiftiz.autokeypresser.LanguageConstants;
 import fiftiz.autokeypresser.MainWindow;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -76,6 +77,7 @@ public class ActivateAutopresserPanel implements NativeKeyListener
 		
 		parent = mainWindow;
 		autoPressButton = (Button) root.lookup(FxmlConstants.AUTOPRESSER_BUTTON_ID);
+		autoPressButton.setText(LanguageConstants.START_AUTO_PRESSER_TEXT);
 		
 		autoPresserTimer = new Timer();
 		autoPresserTask = new AutoPresserTimerTask();
@@ -129,7 +131,7 @@ public class ActivateAutopresserPanel implements NativeKeyListener
 			System.out.println("AUTOPRESSING ...");
 			
 			isAutoPressing = true;
-			autoPressButton.setText("DÉSACTIVER AUTOPRESSER");
+			autoPressButton.setText(LanguageConstants.STOP_AUTO_PRESSER_TEXT);
 			
 			// Update the key that will be auto pressing
 			autoPresserTask = new AutoPresserTimerTask();
@@ -145,7 +147,7 @@ public class ActivateAutopresserPanel implements NativeKeyListener
 		System.out.println("STOP AUTOPRESSING");
 		
 		isAutoPressing = false;
-		autoPressButton.setText("ACTIVER AUTOPRESSER");
+		autoPressButton.setText(LanguageConstants.START_AUTO_PRESSER_TEXT);
 		autoPresserTimer.cancel();
 	}
 	

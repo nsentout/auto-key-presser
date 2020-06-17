@@ -15,7 +15,7 @@
       <HBox alignment="CENTER" prefWidth="600.0" prefHeight="133.0">
       	 <padding><Insets top="20.0"/></padding>
          <children>
-            <Button id="autoPressButton" textAlignment="CENTER" prefWidth="350.0" prefHeight="140.0" text="ACTIVER AUTOPRESS">
+            <Button id="autoPressButton" textAlignment="CENTER" prefWidth="350.0" prefHeight="140.0">
                <font>
                   <Font size="28.0" />
                </font>
@@ -26,7 +26,7 @@
       <HBox id="defineKeyBox" alignment="CENTER_LEFT" prefWidth="300.0" prefHeight="133.0" spacing="150.0">
       	 <padding><Insets top="30.0" left="20.0"/></padding>
          <children>
-            <Button id="defineKeyButton" textAlignment="CENTER" prefWidth="150.0" prefHeight="30.0" text="Définir touche">
+            <Button id="defineKeyButton" textAlignment="CENTER" prefWidth="150.0" prefHeight="30.0">
                <font>
                   <Font size="18.0" />
                </font>
@@ -70,7 +70,7 @@
       
       <HBox alignment="CENTER">
          <padding><Insets top="20.0"/></padding>
-      	 <Button id="applyDelayButton" textAlignment="CENTER" text="Appliquer le délai">
+      	 <Button id="applyDelayButton" textAlignment="CENTER">
             <font>
                <Font size="18.0" />
             </font>
