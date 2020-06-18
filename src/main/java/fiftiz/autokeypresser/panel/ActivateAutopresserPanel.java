@@ -19,7 +19,6 @@ import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 
 public class ActivateAutopresserPanel implements NativeKeyListener, Panel
 {
@@ -84,7 +83,6 @@ public class ActivateAutopresserPanel implements NativeKeyListener, Panel
 		autoPresserTask = new AutoPresserTimerTask();
 		
 		setAutoPressButtonBehavior();
-		enableStartStopAutoPressWithKey(root);
 	}
 	
 	@Override
@@ -108,20 +106,6 @@ public class ActivateAutopresserPanel implements NativeKeyListener, Panel
 			public void handle(ActionEvent event)
 			{
 				handleClickOnAutoPressKey();
-			}
-		});
-	}
-
-	private void enableStartStopAutoPressWithKey(Parent root)
-	{
-		// Save the new auto pressing mouse click
-		root.setOnKeyReleased(new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent keyEvent)
-			{
-				if (keyEvent.getCode().equals(START_STOP_AUTOPRESS_KEY)) {
-					handleClickOnAutoPressKey();
-				}
 			}
 		});
 	}
