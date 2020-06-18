@@ -46,6 +46,41 @@ public class DefineAutopressedKeyPanel
 		setDefineKeyButtonBehavior(root);
 	}
 	
+	private void saveNewAutoPressedKey(Parent root, InputEvent keyEvent)
+	{
+		if (isDefiningAutopressedKey) {
+			String keyString = "";
+
+			if (keyEvent instanceof MouseEvent) {
+				keyString = ((MouseEvent) (keyEvent)).getButton().name();
+			}
+			else if (keyEvent instanceof KeyEvent) {
+				if (((KeyEvent) keyEvent).getCode() == KeyCode.UNDEFINED) {
+					System.err.println("This key is undefined, it can't be autopressed");
+					return;
+				}
+				keyString = ((KeyEvent) keyEvent).getCode().getName();
+			}
+
+			System.out.println("NEW AUTO PRESSED BUTTON : " + keyString);
+
+			// Update the key that will be auto pressing
+			autoPressedKey = keyEvent;
+
+			// Update the label
+			Text newAutopressedKey = new Text(keyString);
+			autopressedKeyLabel.setText(newAutopressedKey.getText());
+
+			// Reset the button allowing to change the key that will be auto pressing
+			defineKeyButton.setText(LanguageConstants.DEFINE_KEY_TEXT);
+			isDefiningAutopressedKey = false;
+
+			// Center the key label
+			double newKeyWidth = newAutopressedKey.getLayoutBounds().getWidth();
+			((HBox) root.lookup(FxmlConstants.DEFINE_KEY_BOX_ID)).setSpacing(MainWindow.WINDOW_WIDTH / 4 - newKeyWidth);
+		}
+	}
+
 	private void setDefineKeyButtonBehavior(Parent root)
 	{
 		// Ask the user to type the new auto pressed key
@@ -55,7 +90,7 @@ public class DefineAutopressedKeyPanel
 			{
 				if (mouseEvent.getButton() == MouseButton.PRIMARY) {
 					System.out.println("DEFINING NEW AUTO PRESSED KEY ...");
-					
+
 					defineKeyButton.setText("?");
 					isDefiningAutopressedKey = true;
 				}
@@ -67,29 +102,7 @@ public class DefineAutopressedKeyPanel
 			@Override
 			public void handle(KeyEvent keyEvent)
 			{
-				if (isDefiningAutopressedKey) {		
-					if (keyEvent.getCode() != KeyCode.UNDEFINED) {
-						System.out.println("NEW AUTO PRESSED KEY: " + keyEvent.getCode());
-
-						// Update the key that will be auto pressing
-						autoPressedKey = keyEvent;
-
-						// Update the label
-						Text newAutopressedKey = new Text(keyEvent.getCode().getName());
-						autopressedKeyLabel.setText(newAutopressedKey.getText());
-
-						// Reset the button allowing to change the key that will be auto pressing
-						defineKeyButton.setText(LanguageConstants.DEFINE_KEY_TEXT);
-						isDefiningAutopressedKey = false;
-
-						// Center the key label
-						double newKeyWidth = newAutopressedKey.getLayoutBounds().getWidth();
-						((HBox) root.lookup(FxmlConstants.DEFINE_KEY_BOX_ID)).setSpacing(MainWindow.WINDOW_WIDTH / 4 - newKeyWidth);
-					}
-					else {
-						System.err.println("This key is undefined, it can't be autopressed");
-					}
-				}
+				saveNewAutoPressedKey(root, keyEvent);
 			}
 		});
 
@@ -98,28 +111,11 @@ public class DefineAutopressedKeyPanel
 			@Override
 			public void handle(MouseEvent mouseEvent)
 			{
-				if (isDefiningAutopressedKey) {
-					System.out.println("NEW AUTO CLICKED BUTTON : " + mouseEvent.getButton().name());
-
-					// Update the key that will be auto pressing
-					autoPressedKey = mouseEvent;
-
-					// Update the label
-					Text newAutopressedKey = new Text(mouseEvent.getButton().name());
-					autopressedKeyLabel.setText(newAutopressedKey.getText());
-
-					// Reset the button allowing to change the key that will be auto pressing
-					defineKeyButton.setText("Définir touche");
-					isDefiningAutopressedKey = false;
-
-					// Center the key label
-					double newKeyWidth = newAutopressedKey.getLayoutBounds().getWidth();
-					((HBox) root.lookup(FxmlConstants.DEFINE_KEY_BOX_ID)).setSpacing(MainWindow.WINDOW_WIDTH / 4 - newKeyWidth);
-				}
+				saveNewAutoPressedKey(root, mouseEvent);
 			}
 		});
 	}
-	
+
 	public boolean isDefiningAutopressedKey() {
 		return isDefiningAutopressedKey;
 	}
