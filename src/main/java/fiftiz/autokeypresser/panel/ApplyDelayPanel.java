@@ -13,7 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 
-public class ApplyDelayPanel
+public class ApplyDelayPanel implements Panel
 {
 	/**
 	 * Delay between two key press.
@@ -42,10 +42,19 @@ public class ApplyDelayPanel
 	
 	private static ApplyDelayPanel applyDelayPanel;
 	
+	/**
+	 * Parent window.
+	 */
+	private static MainWindow parent;
+	
 	
 	private ApplyDelayPanel() { }
 	
-	public void init(Parent root) {
+	@Override
+	public void init(Parent root, MainWindow mainWindow)
+	{
+		parent = mainWindow;
+		
 		applyDelayButton = (Button) root.lookup(FxmlConstants.APPLY_DELAY_BUTTON_ID);
 		applyDelayButton.setText(LanguageConstants.APPLY_DELAY_TEXT);
 
@@ -57,6 +66,22 @@ public class ApplyDelayPanel
 		
 		setApplyDelayButtonBehavior();
 		setDelayTextFieldsBehavior();
+	}
+	
+	@Override
+	public void disablePanel() {
+		applyDelayButton.setDisable(true);
+		minDelay.setDisable(true);
+		secDelay.setDisable(true);
+		msDelay.setDisable(true);
+	}
+	
+	@Override
+	public void enablePanel() {
+		applyDelayButton.setDisable(false);
+		minDelay.setDisable(false);
+		secDelay.setDisable(false);
+		msDelay.setDisable(false);
 	}
 	
 	private void setApplyDelayButtonBehavior()

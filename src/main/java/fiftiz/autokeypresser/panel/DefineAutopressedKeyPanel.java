@@ -15,7 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
-public class DefineAutopressedKeyPanel
+public class DefineAutopressedKeyPanel implements Panel
 {
 	/**
 	 * Indicates whether the user is defining the key to be auto pressed.
@@ -33,17 +33,37 @@ public class DefineAutopressedKeyPanel
 	
 	private static DefineAutopressedKeyPanel defineAutopressedKeyPanel;
 	
+	/**
+	 * Parent window.
+	 */
+	private static MainWindow parent;
+	
 	
 	private DefineAutopressedKeyPanel() {}
 	
-	public void init(Parent root)
+	@Override
+	public void init(Parent root, MainWindow mainWindow)
 	{
+		parent = mainWindow;
+		
 		defineKeyButton = (Button) root.lookup(FxmlConstants.DEFINE_KEY_BUTTON_ID);
 		defineKeyButton.setText(LanguageConstants.DEFINE_KEY_TEXT);
 		
 		autopressedKeyLabel = (Label) root.lookup(FxmlConstants.AUTOPRESSED_KEY_LABEL_ID);
 		
 		setDefineKeyButtonBehavior(root);
+	}
+	
+	@Override
+	public void enablePanel()
+	{
+		defineKeyButton.setDisable(false);
+	}
+	
+	@Override
+	public void disablePanel()
+	{
+		defineKeyButton.setDisable(true);
 	}
 	
 	private void saveNewAutoPressedKey(Parent root, InputEvent keyEvent)
@@ -116,15 +136,18 @@ public class DefineAutopressedKeyPanel
 		});
 	}
 
-	public boolean isDefiningAutopressedKey() {
+	public boolean isDefiningAutopressedKey()
+	{
 		return isDefiningAutopressedKey;
 	}
 	
-	public InputEvent getAutopressedKey() {
+	public InputEvent getAutopressedKey()
+	{
 		return autoPressedKey;
 	}
 	
-	public static DefineAutopressedKeyPanel getInstance() {
+	public static DefineAutopressedKeyPanel getInstance()
+	{
 		if (defineAutopressedKeyPanel == null) {
 			defineAutopressedKeyPanel = new DefineAutopressedKeyPanel();
 		}

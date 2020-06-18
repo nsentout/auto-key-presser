@@ -50,10 +50,10 @@ public class MainWindow extends Application
 		}
 		
 		applyDelayPanel = ApplyDelayPanel.getInstance();
-		applyDelayPanel.init(root);
+		applyDelayPanel.init(root, this);
 		
 		defineAutopressedKeyPanel = DefineAutopressedKeyPanel.getInstance();
-		defineAutopressedKeyPanel.init(root);
+		defineAutopressedKeyPanel.init(root, this);
 		
 		activateAutopresserPanel = ActivateAutopresserPanel.getInstance();
 		activateAutopresserPanel.init(root, this);
@@ -70,6 +70,23 @@ public class MainWindow extends Application
 	public long getAutopresserDelay() {
 		return applyDelayPanel.getAutopresserDelay();
 	}
+	
+	public void disableDefineKeyPanel() {
+		defineAutopressedKeyPanel.disablePanel();
+	}
+	
+	public void enableDefineKeyPanel() {
+		defineAutopressedKeyPanel.enablePanel();
+	}
+	
+	public void disableDelayPanel() {
+		applyDelayPanel.disablePanel();
+	}
+	
+	public void enableDelayPanel() {
+		applyDelayPanel.enablePanel();
+	}
+	
 
 	@Override
 	public void start(Stage primaryStage) throws Exception

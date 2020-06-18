@@ -21,7 +21,7 @@ import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class ActivateAutopresserPanel implements NativeKeyListener
+public class ActivateAutopresserPanel implements NativeKeyListener, Panel
 {
 	/**
 	 * Key to type to start or stop the program to auto press the defined key. Works when the program is running in the background.
@@ -58,6 +58,7 @@ public class ActivateAutopresserPanel implements NativeKeyListener
 	
 	private ActivateAutopresserPanel() { }
 	
+	@Override
 	public void init(Parent root, MainWindow mainWindow)
 	{
 		try {
@@ -84,6 +85,19 @@ public class ActivateAutopresserPanel implements NativeKeyListener
 		
 		setAutoPressButtonBehavior();
 		enableStartStopAutoPressWithKey(root);
+	}
+	
+	@Override
+	public void enablePanel()
+	{
+		autoPressButton.setDisable(false);
+	}
+
+	@Override
+	public void disablePanel()
+	{
+		autoPresserTimer.cancel();
+		autoPressButton.setDisable(true);
 	}
 	
 	private void setAutoPressButtonBehavior()
@@ -129,6 +143,8 @@ public class ActivateAutopresserPanel implements NativeKeyListener
 	{
 		if (parent.getAutopressedKey() != null) {
 			System.out.println("AUTOPRESSING ...");
+			parent.disableDefineKeyPanel();
+			parent.disableDelayPanel();
 			
 			isAutoPressing = true;
 			autoPressButton.setText(LanguageConstants.STOP_AUTO_PRESSER_TEXT);
@@ -145,6 +161,8 @@ public class ActivateAutopresserPanel implements NativeKeyListener
 	private void deactivateAutoPress()
 	{
 		System.out.println("STOP AUTOPRESSING");
+		parent.enableDefineKeyPanel();
+		parent.enableDelayPanel();
 		
 		isAutoPressing = false;
 		autoPressButton.setText(LanguageConstants.START_AUTO_PRESSER_TEXT);
@@ -168,18 +186,23 @@ public class ActivateAutopresserPanel implements NativeKeyListener
 	@Override
 	public void nativeKeyPressed(NativeKeyEvent event) {}
 	
-	public static ActivateAutopresserPanel getInstance() {
+	
+	public boolean isAutoPressing()
+	{
+		return isAutoPressing;
+	}
+	
+	public void cancelAutoPresserTimer()
+	{
+		autoPresserTimer.cancel();
+	}
+	
+	public static ActivateAutopresserPanel getInstance()
+	{
 		if (activateAutopresserPanel == null) {
 			activateAutopresserPanel = new ActivateAutopresserPanel();
 		}
 		return activateAutopresserPanel;
 	}
-	
-	public boolean isAutoPressing() {
-		return isAutoPressing;
-	}
-	
-	public void cancelAutoPresserTimer() {
-		autoPresserTimer.cancel();
-	}
+
 }
