@@ -57,6 +57,8 @@ public class MainWindow extends Application
 		
 		activateAutopresserPanel = ActivateAutopresserPanel.getInstance();
 		activateAutopresserPanel.init(root, this);
+		
+		disableActivateAutopresserPanel();
 	}
 	
 	public boolean isDefiningAutopressedKey() {
@@ -87,6 +89,13 @@ public class MainWindow extends Application
 		applyDelayPanel.enablePanel();
 	}
 	
+	public void disableActivateAutopresserPanel() {
+		activateAutopresserPanel.disablePanel();
+	}
+	
+	public void enableActivateAutopresserPanel() {
+		activateAutopresserPanel.enablePanel();
+	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception

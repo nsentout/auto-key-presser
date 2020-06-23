@@ -83,6 +83,8 @@ public class DefineAutopressedKeyPanel implements Panel
 			}
 
 			System.out.println("NEW AUTO PRESSED BUTTON : " + keyString);
+			
+			parent.enableActivateAutopresserPanel();
 
 			// Update the key that will be auto pressing
 			autoPressedKey = keyEvent;
@@ -111,6 +113,7 @@ public class DefineAutopressedKeyPanel implements Panel
 				if (mouseEvent.getButton() == MouseButton.PRIMARY) {
 					System.out.println("DEFINING NEW AUTO PRESSED KEY ...");
 
+					parent.disableActivateAutopresserPanel();
 					defineKeyButton.setText("?");
 					isDefiningAutopressedKey = true;
 				}
