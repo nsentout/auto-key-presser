@@ -31,7 +31,7 @@ public class DefineAutopressedKeyPanel implements Panel
 	
 	private Label autopressedKeyLabel;
 	
-	private static DefineAutopressedKeyPanel defineAutopressedKeyPanel;
+	private static DefineAutopressedKeyPanel instance;
 	
 	/**
 	 * Parent window.
@@ -151,9 +151,9 @@ public class DefineAutopressedKeyPanel implements Panel
 	
 	public static DefineAutopressedKeyPanel getInstance()
 	{
-		if (defineAutopressedKeyPanel == null) {
-			defineAutopressedKeyPanel = new DefineAutopressedKeyPanel();
+		if (instance == null) {
+			instance = new DefineAutopressedKeyPanel();
 		}
-		return defineAutopressedKeyPanel;
+		return instance;
 	}
 }

@@ -52,7 +52,7 @@ public class ActivateAutopresserPanel implements NativeKeyListener, Panel
 	 */
 	private static Button autoPressButton;
 	
-	private static ActivateAutopresserPanel activateAutopresserPanel;
+	private static ActivateAutopresserPanel instance;
 	
 	
 	private ActivateAutopresserPanel() { }
@@ -183,10 +183,10 @@ public class ActivateAutopresserPanel implements NativeKeyListener, Panel
 	
 	public static ActivateAutopresserPanel getInstance()
 	{
-		if (activateAutopresserPanel == null) {
-			activateAutopresserPanel = new ActivateAutopresserPanel();
+		if (instance == null) {
+			instance = new ActivateAutopresserPanel();
 		}
-		return activateAutopresserPanel;
+		return instance;
 	}
 
 }
