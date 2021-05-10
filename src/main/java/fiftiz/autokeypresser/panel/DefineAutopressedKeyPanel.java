@@ -1,8 +1,8 @@
 package fiftiz.autokeypresser.panel;
 
-import fiftiz.autokeypresser.FxmlConstants;
-import fiftiz.autokeypresser.LanguageConstants;
 import fiftiz.autokeypresser.MainWindow;
+import fiftiz.autokeypresser.constants.FxmlConstants;
+import fiftiz.autokeypresser.constants.LanguageConstants;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;

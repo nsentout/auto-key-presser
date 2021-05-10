@@ -1,6 +1,9 @@
 package fiftiz.autokeypresser;
 
 import java.io.IOException;
+import java.text.ParseException;
+
+import fiftiz.autokeypresser.config.UserParameters;
 import fiftiz.autokeypresser.panel.ActivateAutopresserPanel;
 import fiftiz.autokeypresser.panel.ApplyDelayPanel;
 import fiftiz.autokeypresser.panel.DefineAutopressedKeyPanel;
@@ -33,6 +36,8 @@ public class MainWindow extends Application
 	private static ApplyDelayPanel applyDelayPanel;
 	private static ActivateAutopresserPanel activateAutopresserPanel;
 	
+	/******************************************************************************************/
+	
 	/**
 	 * Main panel of the window.
 	 */
@@ -58,8 +63,70 @@ public class MainWindow extends Application
 		activateAutopresserPanel = ActivateAutopresserPanel.getInstance();
 		activateAutopresserPanel.init(root, this);
 		
+		readUserParameters();
+		
 		disableActivateAutopresserPanel();
 	}
+
+	@Override
+	public void start(Stage primaryStage) throws Exception
+	{
+		Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+		primaryStage.setTitle(WINDOW_TITLE);
+		primaryStage.setResizable(false);
+		primaryStage.setScene(scene);
+		System.out.println("javafx thread: " + Thread.currentThread().getName());
+		primaryStage.show();	
+	}
+
+	@Override
+	public void stop()
+	{
+		System.out.println("Closed window ...");
+		if (activateAutopresserPanel.isAutoPressing()) {
+			activateAutopresserPanel.cancelAutoPresserTimer();
+		}
+		System.exit(0);
+	}
+	
+	public void readUserParameters() throws ParseException
+	{
+		UserParameters userParameters = new UserParameters();
+		boolean parametersFileExist = userParameters.readParametersFile();
+		if (parametersFileExist) {
+			activateAutopresserPanel.setStartStopAutoPressKey(userParameters.getParameter(UserParameters.START_STOP_AUTOPRESS_KEY_KEY));
+			String autoPressDelayParameter = userParameters.getParameter(UserParameters.DEFAULT_AUTOPRESS_DELAY_KEY);
+			String [] autoPressDelayParameters = autoPressDelayParameter.split(":");
+			if (autoPressDelayParameters.length == 3) {
+				int minute = 0, second = 0, ms = 0; 
+
+				if (autoPressDelayParameters[0] != "") {
+					minute = Integer.valueOf(autoPressDelayParameters[0]);
+				}
+				if (autoPressDelayParameters[1] != "") {
+					second = Integer.valueOf(autoPressDelayParameters[1]);
+				}
+				if (autoPressDelayParameters[2] != "") {
+					ms = Integer.valueOf(autoPressDelayParameters[2]);
+				}
+				
+				applyDelayPanel.setAutopresserDelay(minute, second, ms);
+			}
+			else {
+				throw new ParseException("Could not parse the DEFAULT_AUTOPRESS_DELAY parameter", 0);
+			}
+		}
+		else {
+			System.out.println("File does not exist or is not parsable");
+		}
+	}
+	
+	public static void main(String[] args)
+	{
+		Application.launch(args);
+	}
+	
+	/******************************************************************************************/
 	
 	public boolean isDefiningAutopressedKey() {
 		return defineAutopressedKeyPanel.isDefiningAutopressedKey();
@@ -95,32 +162,6 @@ public class MainWindow extends Application
 	
 	public void enableActivateAutopresserPanel() {
 		activateAutopresserPanel.enablePanel();
-	}
-
-	@Override
-	public void start(Stage primaryStage) throws Exception
-	{
-		Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
-		primaryStage.setTitle(WINDOW_TITLE);
-		primaryStage.setResizable(false);
-		primaryStage.setScene(scene);
-		System.out.println("javafx thread: " + Thread.currentThread().getName());
-		primaryStage.show();	
-	}
-	
-	public static void main(String[] args)
-	{
-		Application.launch(args);
-	}
-
-	@Override
-	public void stop()
-	{
-		System.out.println("Closed window ...");
-		if (activateAutopresserPanel.isAutoPressing()) {
-			activateAutopresserPanel.cancelAutoPresserTimer();
-		}
-		System.exit(0);
 	}
 
 }

@@ -2,9 +2,9 @@ package fiftiz.autokeypresser.panel;
 
 import java.util.function.UnaryOperator;
 
-import fiftiz.autokeypresser.FxmlConstants;
-import fiftiz.autokeypresser.LanguageConstants;
 import fiftiz.autokeypresser.MainWindow;
+import fiftiz.autokeypresser.constants.FxmlConstants;
+import fiftiz.autokeypresser.constants.LanguageConstants;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
@@ -179,6 +179,28 @@ public class ApplyDelayPanel implements Panel
 		else {
 			applyDelayButton.setDisable(false);
 		}
+	}
+	
+	public void setAutopresserDelay(int minute, int second, int ms)
+	{
+		minDelay.setText("");
+		secDelay.setText("");
+		msDelay.setText("");
+		
+		if (minute > 0) {
+			minDelay.setText(String.valueOf(minute));
+		}
+		if (second > 0) {
+			secDelay.setText(String.valueOf(second));
+		}
+		if (ms > 0) {
+			msDelay.setText(String.valueOf(ms));
+		}
+
+		autoPresserDelay = 0;
+		autoPresserDelay += minute * 60000;
+		autoPresserDelay += second * 1000;
+		autoPresserDelay += ms;
 	}
 	
 	public long getAutopresserDelay() {

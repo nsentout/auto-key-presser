@@ -10,9 +10,9 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
 import fiftiz.autokeypresser.AutoPresserTimerTask;
-import fiftiz.autokeypresser.FxmlConstants;
-import fiftiz.autokeypresser.LanguageConstants;
 import fiftiz.autokeypresser.MainWindow;
+import fiftiz.autokeypresser.constants.FxmlConstants;
+import fiftiz.autokeypresser.constants.LanguageConstants;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,9 +23,10 @@ import javafx.scene.input.KeyCode;
 public class ActivateAutopresserPanel implements NativeKeyListener, Panel
 {
 	/**
-	 * Key to type to start or stop the program to auto press the defined key. Works when the program is running in the background.
+	 * Default key to type to start or stop the program to auto press the defined key. Works when the program is running in the background.
+	 * Can be override by the file params.ini.
 	 */
-	private static final KeyCode START_STOP_AUTOPRESS_KEY = KeyCode.F1;
+	private static final KeyCode DEFAULT_START_STOP_AUTOPRESS_KEY = KeyCode.F1;
 
 	/**
 	 * Indicates whether the auto presser is active.
@@ -41,6 +42,12 @@ public class ActivateAutopresserPanel implements NativeKeyListener, Panel
 	 * Simulate a key press or mouse click.
 	 */
 	private static AutoPresserTimerTask autoPresserTask;
+	
+	/**
+	 * Key to type to start or stop the program to auto press the defined key. Works when the program is running in the background.
+	 * Can be override by the file params.ini.
+	 */
+	private static KeyCode startStopAutopressKey;
 	
 	/**
 	 * Parent window.
@@ -76,6 +83,7 @@ public class ActivateAutopresserPanel implements NativeKeyListener, Panel
 		GlobalScreen.addNativeKeyListener(new ActivateAutopresserPanel());
 		
 		parent = mainWindow;
+		startStopAutopressKey = DEFAULT_START_STOP_AUTOPRESS_KEY;
 		autoPressButton = (Button) root.lookup(FxmlConstants.AUTOPRESSER_BUTTON_ID);
 		autoPressButton.setText(LanguageConstants.START_AUTO_PRESSER_TEXT);
 		
@@ -158,7 +166,7 @@ public class ActivateAutopresserPanel implements NativeKeyListener, Panel
 		System.out.println("background listener thread: " + Thread.currentThread().getName());
 		String keyReleased = NativeKeyEvent.getKeyText(event.getKeyCode());
 		
-		if (keyReleased.equalsIgnoreCase(START_STOP_AUTOPRESS_KEY.getName())) {
+		if (keyReleased.equalsIgnoreCase(startStopAutopressKey.getName())) {
 			// Make the JavaFX application thread call this function
 			Platform.runLater(() -> handleClickOnAutoPressKey());
 		}
@@ -179,6 +187,11 @@ public class ActivateAutopresserPanel implements NativeKeyListener, Panel
 	public void cancelAutoPresserTimer()
 	{
 		autoPresserTimer.cancel();
+	}
+	
+	public void setStartStopAutoPressKey(String key)
+	{
+		startStopAutopressKey = KeyCode.valueOf(key);
 	}
 	
 	public static ActivateAutopresserPanel getInstance()
