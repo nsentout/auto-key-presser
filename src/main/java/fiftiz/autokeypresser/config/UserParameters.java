@@ -36,10 +36,6 @@ public class UserParameters
 					if (readParameter.length == 2) {
 						parameters.put(readParameter[0], readParameter[1]);
 					}
-					else {
-						reader.close();
-						return false;
-					}
 				}
 			}
 			catch (IOException e) {

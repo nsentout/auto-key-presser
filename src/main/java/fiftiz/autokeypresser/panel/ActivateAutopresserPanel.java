@@ -191,7 +191,12 @@ public class ActivateAutopresserPanel implements NativeKeyListener, Panel
 	
 	public void setStartStopAutoPressKey(String key)
 	{
-		startStopAutopressKey = KeyCode.valueOf(key);
+		try {
+			startStopAutopressKey = KeyCode.valueOf(key);
+		}
+		catch (IllegalArgumentException e) {
+			System.err.println("The START_STOP_AUTOPRESS_KEY parameter is not valid");
+		}
 	}
 	
 	public static ActivateAutopresserPanel getInstance()

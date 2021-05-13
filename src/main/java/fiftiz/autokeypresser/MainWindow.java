@@ -94,26 +94,39 @@ public class MainWindow extends Application
 		UserParameters userParameters = new UserParameters();
 		boolean parametersFileExist = userParameters.readParametersFile();
 		if (parametersFileExist) {
-			activateAutopresserPanel.setStartStopAutoPressKey(userParameters.getParameter(UserParameters.START_STOP_AUTOPRESS_KEY_KEY));
-			String autoPressDelayParameter = userParameters.getParameter(UserParameters.DEFAULT_AUTOPRESS_DELAY_KEY);
-			String [] autoPressDelayParameters = autoPressDelayParameter.split(":");
-			if (autoPressDelayParameters.length == 3) {
-				int minute = 0, second = 0, ms = 0; 
-
-				if (autoPressDelayParameters[0] != "") {
-					minute = Integer.valueOf(autoPressDelayParameters[0]);
-				}
-				if (autoPressDelayParameters[1] != "") {
-					second = Integer.valueOf(autoPressDelayParameters[1]);
-				}
-				if (autoPressDelayParameters[2] != "") {
-					ms = Integer.valueOf(autoPressDelayParameters[2]);
-				}
-				
-				applyDelayPanel.setAutopresserDelay(minute, second, ms);
+			// START_STOP_AUTOPRESS_KEY parameter
+			String startStopAutopressKeyParameter = userParameters.getParameter(UserParameters.START_STOP_AUTOPRESS_KEY_KEY);
+			if (startStopAutopressKeyParameter != null) {
+				activateAutopresserPanel.setStartStopAutoPressKey(startStopAutopressKeyParameter);
 			}
-			else {
-				throw new ParseException("Could not parse the DEFAULT_AUTOPRESS_DELAY parameter", 0);
+
+			// DEFAULT_AUTOPRESS_DELAY parameter
+			String autoPressDelayParameter = userParameters.getParameter(UserParameters.DEFAULT_AUTOPRESS_DELAY_KEY);
+			if (autoPressDelayParameter != null) {
+				String [] autoPressDelayParameters = autoPressDelayParameter.split(":");
+				if (autoPressDelayParameters.length == 3) {
+					try {
+						int minute = 0, second = 0, ms = 0; 
+		
+						if (autoPressDelayParameters[0] != "") {
+							minute = Integer.valueOf(autoPressDelayParameters[0]);
+						}
+						if (autoPressDelayParameters[1] != "") {
+							second = Integer.valueOf(autoPressDelayParameters[1]);
+						}
+						if (autoPressDelayParameters[2] != "") {
+							ms = Integer.valueOf(autoPressDelayParameters[2]);
+						}
+						
+						applyDelayPanel.setAutopresserDelay(minute, second, ms);
+					}
+					catch (NumberFormatException e) {
+						System.err.println("The DEFAULT_AUTOPRESS_DELAY parameter is not valid");
+					}
+				}
+				else {
+					System.err.println("The DEFAULT_AUTOPRESS_DELAY parameter is not valid");
+				}
 			}
 		}
 		else {
