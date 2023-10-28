@@ -11,4 +11,8 @@ public interface FxmlConstants
 	static String MINUTE_INPUT_ID = "#minDelay";
 	static String SECOND_INPUT_ID = "#secDelay";
 	static String MILLISECOND_INPUT_ID = "#msDelay";
+	
+	static String MIN_LABEL_ID = "#labelMin";
+	static String SEC_LABEL_ID = "#labelSec";
+	static String MS_LABEL_ID = "#labelMs";
 }

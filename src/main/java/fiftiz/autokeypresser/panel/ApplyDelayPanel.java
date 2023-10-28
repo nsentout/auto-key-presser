@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
@@ -37,6 +38,21 @@ public class ApplyDelayPanel implements Panel
 	 * Input for the milliseconds.
 	 */
 	private TextField msDelay;
+	
+	/**
+	 * Label "min"
+	 */
+	private Label minLabel;
+	
+	/**
+	 * Label "sec"
+	 */
+	private Label secLabel;
+	
+	/**
+	 * Label "ms"
+	 */
+	private Label msLabel;
 
 	/**
 	 * Button to press to apply a new delay.
@@ -68,6 +84,10 @@ public class ApplyDelayPanel implements Panel
 		minDelay = (TextField) root.lookup(FxmlConstants.MINUTE_INPUT_ID);
 		secDelay = (TextField) root.lookup(FxmlConstants.SECOND_INPUT_ID);
 		msDelay = (TextField) root.lookup(FxmlConstants.MILLISECOND_INPUT_ID);
+		
+		minLabel = (Label) root.lookup(FxmlConstants.MIN_LABEL_ID);
+		secLabel = (Label) root.lookup(FxmlConstants.SEC_LABEL_ID);
+		msLabel = (Label) root.lookup(FxmlConstants.MS_LABEL_ID);
 		
 		secDelay.setText(String.valueOf(autoPresserDelay / 1000));
 		
@@ -104,6 +124,9 @@ public class ApplyDelayPanel implements Panel
 		minDelay.setDisable(true);
 		secDelay.setDisable(true);
 		msDelay.setDisable(true);
+		minLabel.setDisable(true);
+		secLabel.setDisable(true);
+		msLabel.setDisable(true);
 	}
 	
 	@Override
@@ -112,6 +135,9 @@ public class ApplyDelayPanel implements Panel
 		minDelay.setDisable(false);
 		secDelay.setDisable(false);
 		msDelay.setDisable(false);
+		minLabel.setDisable(false);
+		secLabel.setDisable(false);
+		msLabel.setDisable(false);
 	}
 	
 	private void setApplyDelayButtonBehavior()

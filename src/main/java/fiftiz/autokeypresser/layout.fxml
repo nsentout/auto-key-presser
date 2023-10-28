@@ -42,17 +42,17 @@
       <HBox alignment="CENTER" spacing="30.0">
          <padding><Insets left="20.0"/></padding>
          <children>
-            <Label text="min" prefWidth="50.0">
+            <Label id="labelMin" text="min" prefWidth="50.0">
 	           <font>
 	              <Font size="18.0" />
 	           </font>
             </Label>
-            <Label text="sec" prefWidth="50.0">
+            <Label id="labelSec" text="sec" prefWidth="50.0">
 	           <font>
 	              <Font size="18.0" />
 	           </font>
             </Label>
-            <Label text="ms" prefWidth="50.0">
+            <Label id="labelMs" text="ms" prefWidth="50.0">
 	           <font>
 	              <Font size="18.0" />
 	          </font>
