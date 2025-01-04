@@ -7,5 +7,5 @@ module autokeypresser {
 	requires javafx.controls;
 	requires javafx.fxml;
 	requires transitive javafx.graphics;
-	requires transitive jnativehook;
+	requires transitive com.github.kwhat.jnativehook;
 }

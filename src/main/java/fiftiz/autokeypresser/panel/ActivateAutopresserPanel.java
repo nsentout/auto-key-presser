@@ -4,10 +4,10 @@ import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
-import org.jnativehook.keyboard.NativeKeyEvent;
-import org.jnativehook.keyboard.NativeKeyListener;
+import com.github.kwhat.jnativehook.GlobalScreen;
+import com.github.kwhat.jnativehook.NativeHookException;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
+import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 
 import fiftiz.autokeypresser.AutoPresserTimerTask;
 import fiftiz.autokeypresser.MainWindow;
@@ -171,14 +171,7 @@ public class ActivateAutopresserPanel implements NativeKeyListener, Panel
 			Platform.runLater(() -> handleClickOnAutoPressKey());
 		}
 	}
-	
-	@Override
-	public void nativeKeyTyped(NativeKeyEvent event) {}
 
-	@Override
-	public void nativeKeyPressed(NativeKeyEvent event) {}
-	
-	
 	public boolean isAutoPressing()
 	{
 		return isAutoPressing;
